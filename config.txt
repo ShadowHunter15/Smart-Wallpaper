@@ -1,0 +1,15 @@
+Wallpaper path: None
+Run at startup: no 
+clock format (24 or 12): 24 
+font file path: None
+battery percentage: yes 
+alarms: yes 
+reminders: yes 
+weather: yes 
+app usage panel: yes 
+internet speed: yes 
+news headlines: yes 
+Crypto prices: yes 
+fun fact colomun: yes 
+jokes colomun: yes 
+get emails: yes 
