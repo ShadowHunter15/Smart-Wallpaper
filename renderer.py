@@ -5,9 +5,8 @@ from PIL import ImageDraw, ImageFont, Image
 import os
 from functools import lru_cache
 from datetime import datetime as dt
-
 import PIL
-
+import psutil
 class SmartWallpaperRenderer():
     
     """
@@ -33,6 +32,7 @@ class SmartWallpaperRenderer():
         self.renderTimeDate()
         self.renderFunFacts()
         self.renderJokes()
+        self.renderBattery()
         self.renderFinalWallpaper()
         self.cycle += 1
 
@@ -59,7 +59,8 @@ class SmartWallpaperRenderer():
         imageText.text((int((self.screenSize[0] - wdate)/2),int((self.screenSize[1]) + (2 * hdate))/2), self.currDate, font = fontDate)
         imageText.text((int((self.screenSize[0] - w)/2),int((self.screenSize[1] - (1.5 * h))/2)), Time, font=fontText)
         self.currImage = image
-
+    
+    #printing the fun facts on the image
     def renderFunFacts(self):
         if(self.settings["facts"] != "yes"):
             return
@@ -83,12 +84,13 @@ class SmartWallpaperRenderer():
         imageText = ImageDraw.Draw(self.currImage)
         imageText.text((int((self.screenSize[0] - fontFact.getsize("Did you know that:")[0])/2),int((self.screenSize[1] + 250)/2)), "Did you know that:", font=fontFact)
         imageText.text((int((self.screenSize[0] - w)/2),int((self.screenSize[1] + 350)/2)), self.fact, font=fontFact)
-
+    
+    #printing the jokess in the image
     def renderJokes(self):
         if(self.settings["jokes"] != "yes"):
             return
         fontJoke = self.getFont(self.font, 30)
-        if(self.cycle % 30 == 0):
+        if(self.cycle % 34 == 0):
             jokesFile = open(os.path.abspath("srcs/jokes.txt"), "r")
             jokes = jokesFile.readlines()
             joke = jokes[random.randint(0, len(jokes))].split()
@@ -108,7 +110,18 @@ class SmartWallpaperRenderer():
         imageText.text((int((self.screenSize[0] - fontJoke.getsize("Cringey dad joke:")[0])/2),int((self.screenSize[1] - 635)/2)), "Cringey dad joke:", font=fontJoke)
         imageText.text((int((self.screenSize[0] - w )/2),int((self.screenSize[1] - 550) /2)), self.joke, font=fontJoke)
 
+    def renderBattery(self):
+        if(self.settings["battery"] == "yes"):
+            battery = Image.open("srcs/battery.png")
+            battery = battery.resize((int(377 * 0.15), int(605 * 0.15)))
+            batteryPerc = str(psutil.sensors_battery().percent)
+            fontBattery = self.getFont(self.font, 40)
+            w, h = fontBattery.getsize(batteryPerc) 
+            imageText = ImageDraw.Draw(battery)
+            imageText.text((int((battery.size[0] - w)/2),int((battery.size[1] - (0.15* h))/2)), batteryPerc, font=fontBattery, fill= "black")
+            self.currImage.paste(battery, (self.screenSize[0] - int(battery.size[0] * 1.25), 10))
     def renderFinalWallpaper(self):
         path = os.path.abspath("srcs") + "/finalImage.png"
         self.currImage.save(path)
         ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
+
