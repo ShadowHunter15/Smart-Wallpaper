@@ -27,7 +27,6 @@ for the font provide a path or leave the choice "None" to use the default font.
 
 
 current working fucntions:
-
 wallpaper
 font
 jokes
