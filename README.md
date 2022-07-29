@@ -1,11 +1,11 @@
 VERSION 1.10
 
 LOG
-
+#
 26/7/2022 Version 1.0: Uploaded version 1.0 to github
 #
 28/7/2022 Version 1.10: implemented battery indicator and added requirements file. 
-
+#
 
 
 ## Welcome to Smart Wallpaper! 
