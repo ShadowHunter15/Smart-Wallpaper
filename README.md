@@ -27,21 +27,21 @@ for the font provide a path or leave the choice "None" to use the default font.
 
 
 
-current working fucntions:
-wallpaper
-font
-jokes
-facts
-battery
+## current working fucntions:
+  -wallpaper
+  -font
+  -jokes
+  -facts
+  -battery
 
-currently supported platforms:
+## currently supported platforms:
 
-Windows
+  -Windows
 
 
-currently supported screen sizes:
+## currently supported screen sizes:
 
-1366 * 768
+  -1366 * 768
 
 
 Please consider staring it
