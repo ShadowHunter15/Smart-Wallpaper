@@ -16,7 +16,7 @@ This is a toolkit that allows you to change your wallpaper  into a live, smart o
 it is also customizable, you can change many things like the font, background image, color, etc.
 
 
-##USAGE
+## USAGE
 
 the config file is the settings panel for now.
 the toolkit comes with a default font and wallapper, but you may want to provide a path to those. You can also toggle some functionalities on or off by simply changing them between "yes" and "no".
