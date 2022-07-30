@@ -9,9 +9,10 @@ Sw = SmartWallpaperRenderer(settings, screenSize)
 
 while True:
     try:
-        time.sleep(2)
+        time.sleep(0.5)
         Sw.mainLoop()
-    except OSError:
+        print("Cycle: " + Sw.cycle, end = '\r')
+    except OSError: 
         print("error")
         ctypes.windll.user32.SystemParametersInfoW(20, 0, r"C:\Users\osdrw\Desktop\Programming\Python\Smart wallpaper\srcs\finalImage.png", 0)
 

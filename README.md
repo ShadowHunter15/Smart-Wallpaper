@@ -1,4 +1,4 @@
-VERSION 1.10
+VERSION 1.15
 
 LOG
 #
@@ -6,8 +6,8 @@ LOG
 #
 28/7/2022 Version 1.10: implemented battery indicator and added requirements file. 
 #
-
-
+30/7/2022 Version 1.15: added seconds to clock, added support for all 16:9 displays.
+#
 # Welcome to Smart Wallpaper! 
 
 
@@ -42,6 +42,9 @@ for the font provide a path or leave the choice "None" to use the default font.
 ## currently supported screen sizes:
 
   * 1366 * 768
+  * 1920 * 1080
+  * 3840 * 2160
+  * _All 16:9 displays_
 
 
 Please consider staring it

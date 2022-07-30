@@ -17,8 +17,10 @@ class SmartWallpaperRenderer():
     
     def __init__(self, settings, screenSize) -> None:
         self.cycle = 0
+        self.ratio =  screenSize[0] / 1366
         self.currDate = dt.today().strftime('%Y-%m-%d')
         self.getFont = lru_cache()(ImageFont.truetype)
+        print(self.ratio)
         self.settings = settings
         self.font = settings["font"]
         self.fact = None
@@ -26,6 +28,7 @@ class SmartWallpaperRenderer():
         self.screenSize = screenSize
         self.baseWallpaper = None
         self.initializeBaseWallpaper()
+        self.initilalizeVariables()
         self.currImage = None
 
     def mainLoop(self):
@@ -40,6 +43,7 @@ class SmartWallpaperRenderer():
     def initializeBaseWallpaper(self):
         self.baseWallpaper = self.settings["wallpaper"]
         self.baseWallpaper = self.baseWallpaper.resize(self.screenSize)
+        print(self.screenSize)
         self.baseWallpaper.save(os.path.abspath("srcs") + "\BaseWallpaper.png")
         self.baseWallpaper = os.path.abspath("srcs") + "\BaseWallpaper.png"
 
@@ -49,79 +53,82 @@ class SmartWallpaperRenderer():
         #coordinates in the PIL module start from the top left corner as the (0, 0) origin
         image = Image.open(self.baseWallpaper)
         imageText = ImageDraw.Draw(image)
-        Time = datetime.datetime.now().time().strftime("%H:%M")
-        if(self.currDate != dt.today().strftime('%Y-%m-%d')):
-            self.currDate = dt.today().strftime('%Y-%m-%d')
-        fontText = self.getFont(self.font, 150)
-        fontDate = self.getFont(self.font, 50);
+        Time = datetime.datetime.now().time().strftime("%H:%M:%S")
+        if(self.currDate != dt.today().strftime('%d-%m-%Y')):
+            self.currDate = dt.today().strftime('%d-%m-%Y')
+        fontText = self.getFont(self.font, int(150 * self.ratio))
+        fontDate = self.getFont(self.font, int(50 * self.ratio));
         w, h = fontText.getsize(Time) 
         wdate, hdate = fontDate.getsize(self.currDate)
-        imageText.text((int((self.screenSize[0] - wdate)/2),int((self.screenSize[1]) + (2 * hdate))/2), self.currDate, font = fontDate)
-        imageText.text((int((self.screenSize[0] - w)/2),int((self.screenSize[1] - (1.5 * h))/2)), Time, font=fontText)
+        imageText.text((int((self.screenSize[0] - wdate)/2),int((self.screenSize[1]) + (2* self.ratio * hdate))/2), self.currDate, font = fontDate)
+        imageText.text((int((self.screenSize[0] - w)/2),int((self.screenSize[1] - (1.5 * h * self.ratio))/2)), Time, font=fontText)
         self.currImage = image
     
+    def initilalizeVariables(self):
+        pass
+
     #printing the fun facts on the image
     def renderFunFacts(self):
         if(self.settings["facts"] != "yes"):
             return
-        fontFact = self.getFont(self.font, 35)
-        if(self.cycle % 15 == 0):
+        fontFact = self.getFont(self.font, int(35 * self.ratio))
+        if(self.cycle % 150 == 0):
             factsFile = open(os.path.abspath("srcs/facts.txt"), "r")
             facts = factsFile.readlines()
             fact = facts[random.randint(0, len(facts))].split()
             currString = fact[0]
             currStringLen = 0
-            hi = 550
+            hi = int(550 * self.ratio)
             for i in range(1, len(fact)):
                 currStringLen += fontFact.getsize(fact[i])[0]
                 if(currStringLen >= hi):
-                    hi += 550
+                    hi += int(550 * self.ratio)
                     currString += "\n" + fact[i]
                 else:
                     currString += " " + fact[i]
             self.fact = currString
         w = fontFact.getsize_multiline(self.fact)[0]
         imageText = ImageDraw.Draw(self.currImage)
-        imageText.text((int((self.screenSize[0] - fontFact.getsize("Did you know that:")[0])/2),int((self.screenSize[1] + 250)/2)), "Did you know that:", font=fontFact)
-        imageText.text((int((self.screenSize[0] - w)/2),int((self.screenSize[1] + 350)/2)), self.fact, font=fontFact)
-    
+        imageText.text((int((self.screenSize[0] - fontFact.getsize("Did you know that:")[0])/2),int((self.screenSize[1] + (250 * self.ratio))/2)), "Did you know that:", font=fontFact)
+        imageText.text((int((self.screenSize[0] - w)/2),int((self.screenSize[1] + (350 * self.ratio))/2)), self.fact, font=fontFact)
+
     #printing the jokess in the image
     def renderJokes(self):
         if(self.settings["jokes"] != "yes"):
             return
-        fontJoke = self.getFont(self.font, 30)
-        if(self.cycle % 34 == 0):
+        fontJoke = self.getFont(self.font, int(30 * self.ratio))
+        if(self.cycle % 200 == 0):
             jokesFile = open(os.path.abspath("srcs/jokes.txt"), "r")
             jokes = jokesFile.readlines()
             joke = jokes[random.randint(0, len(jokes))].split()
             currString = joke[0]
             currStringLen = 0
-            hi = 400
+            hi = int(500 * self.ratio)
             for i in range(1, len(joke)):
                 currStringLen += fontJoke.getsize(joke[i])[0]
                 if(currStringLen >= hi):
-                    hi += 400
+                    hi += int(400 * self.ratio)
                     currString += "\n" + joke[i]
                 else:
                     currString += " " + joke[i]
             self.joke = currString
         w = fontJoke.getsize_multiline(self.joke)[0]
         imageText = ImageDraw.Draw(self.currImage)
-        imageText.text((int((self.screenSize[0] - fontJoke.getsize("Cringey dad joke:")[0])/2),int((self.screenSize[1] - 635)/2)), "Cringey dad joke:", font=fontJoke)
-        imageText.text((int((self.screenSize[0] - w )/2),int((self.screenSize[1] - 550) /2)), self.joke, font=fontJoke)
+        imageText.text((int((self.screenSize[0] - fontJoke.getsize("Cringey dad joke:")[0])/2),int((self.screenSize[1] - (635 * self.ratio))/2)), "Cringey dad joke:", font=fontJoke)
+        imageText.text((int((self.screenSize[0] - w )/2),int((self.screenSize[1] - (550 * self.ratio)) /2)), self.joke, font=fontJoke)
 
     def renderBattery(self):
         if(self.settings["battery"] == "yes"):
             battery = Image.open("srcs/battery.png")
-            battery = battery.resize((int(377 * 0.15), int(605 * 0.15)))
+            battery = battery.resize((int(377 * 0.15 * self.ratio), int(605 * 0.15 * self.ratio)))
             batteryPerc = str(psutil.sensors_battery().percent)
-            fontBattery = self.getFont(self.font, 40)
+            fontBattery = self.getFont(self.font, int(40 * self.ratio))
             w, h = fontBattery.getsize(batteryPerc) 
             imageText = ImageDraw.Draw(battery)
-            imageText.text((int((battery.size[0] - w)/2),int((battery.size[1] - (0.15* h))/2)), batteryPerc, font=fontBattery, fill= "black")
-            self.currImage.paste(battery, (self.screenSize[0] - int(battery.size[0] * 1.25), 10))
+            imageText.text((int((battery.size[0] - w)/2),int((battery.size[1] - (0.15* h * self.ratio))/2)), batteryPerc, font=fontBattery, fill= "black")
+            self.currImage.paste(battery, (self.screenSize[0] - int(battery.size[0] * 1.25 * self.ratio), int(10 * self.ratio)))
+
     def renderFinalWallpaper(self):
         path = os.path.abspath("srcs") + "/finalImage.png"
         self.currImage.save(path)
         ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
-
