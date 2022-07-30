@@ -11,7 +11,7 @@ while True:
     try:
         time.sleep(0.5)
         Sw.mainLoop()
-        print("Cycle: " + Sw.cycle, end = '\r')
+        print("Cycle: " + str(Sw.cycle), end = '\r')
     except OSError: 
         print("error")
         ctypes.windll.user32.SystemParametersInfoW(20, 0, r"C:\Users\osdrw\Desktop\Programming\Python\Smart wallpaper\srcs\finalImage.png", 0)
