@@ -1,6 +1,6 @@
 Wallpaper path: None
 Run at startup: no 
-clock format (24 or 12): 24 
+clock format (24 or 12): 12
 font file path: None
 battery percentage: yes 
 alarms: yes 
