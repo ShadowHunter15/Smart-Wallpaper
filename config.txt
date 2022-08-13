@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 Wallpaper path: srcs/4.jpg
+=======
+Wallpaper path: srcs/3.jpg
+>>>>>>> 78b27c76a59bc6fa6687c97d3b55f383269eb14b
 clock format (24 or 12): 12
 font file path: srcs/Comfortaa-Light.ttf
 battery percentage: yes
