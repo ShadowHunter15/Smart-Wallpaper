@@ -144,26 +144,27 @@ class SmartWallpaperRenderer():
                 self.currImage.paste(bolt, (int(self.screenSize[0] - int(battery.size[0] + int(12 * self.ratio))), int(14 * self.ratio)), bolt) #THAT'S HOW YOU PASTE TRASNAPARENT IMAGES IN PIL
 
     def renderInternetPing(self, ping):
-        ping = str(ping).split()
-        if "Average" in ping:
-            ping = ping[ping.index("Average") + 2]
-            ping = ping[:ping.index("s")+1]
-            numberPart = int(ping[:-2])
-            colour = "green"
-            if numberPart > 100:
-                colour = "yellow"
-            if numberPart > 175:
-                colour = "red"
-        else:
-           ping = "Infinite"
-           colour = "red"
-        wifi = Image.open("srcs/WiFi.png")
-        wifi = wifi.resize((int(wifi.size[0] * 0.10 * self.ratio), int(wifi.size[1] * 0.10 * self.ratio)))
-        wifi = wifi.convert("RGBA")
-        pingFont = self.getFont(self.font, int(25 * self.ratio))
-        imageText = ImageDraw.Draw(self.currImage)
-        imageText.text((int(wifi.size[0]/2) + int(self.screenSize[0] - (160 * self.ratio)) - int(pingFont.getsize(ping)[0]/2), int(90 * self.ratio)), ping,font=pingFont, fill=colour)
-        self.currImage.paste(wifi, (int(self.screenSize[0] - (160 * self.ratio)), int(30 * self.ratio)), wifi)
+        if(self.settings["internet speed"] == "yes"):
+            ping = str(ping).split()
+            if "Average" in ping:
+                ping = ping[ping.index("Average") + 2]
+                ping = ping[:ping.index("s")+1]
+                numberPart = int(ping[:-2])
+                colour = "green"
+                if numberPart > 100:
+                    colour = "yellow"
+                if numberPart > 175:
+                    colour = "red"
+            else:
+               ping = "Infinite"
+               colour = "red"
+            wifi = Image.open("srcs/WiFi.png")
+            wifi = wifi.resize((int(wifi.size[0] * 0.10 * self.ratio), int(wifi.size[1] * 0.10 * self.ratio)))
+            wifi = wifi.convert("RGBA")
+            pingFont = self.getFont(self.font, int(25 * self.ratio))
+            imageText = ImageDraw.Draw(self.currImage)
+            imageText.text((int(wifi.size[0]/2) + int(self.screenSize[0] - (160 * self.ratio)) - int(pingFont.getsize(ping)[0]/2), int(90 * self.ratio)), ping,font=pingFont, fill=colour)
+            self.currImage.paste(wifi, (int(self.screenSize[0] - (160 * self.ratio)), int(30 * self.ratio)), wifi)
     
     def renderCycleCount(self):
         if(self.settings["cycle"] == "yes"):

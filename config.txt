@@ -1,15 +1,15 @@
-Wallpaper path: srcs/2.jpg
+Wallpaper path: srcs/4.jpg
 clock format (24 or 12): 12
 font file path: srcs/Comfortaa-Light.ttf
-battery percentage: yes 
+battery percentage: yes
 alarms: yes 
 reminders: yes 
 weather: yes 
 app usage panel: yes 
-internet speed: yes 
+ping: yes
 news headlines: yes 
 Crypto prices: yes
-fun fact colomun: yes 
+fun fact colomun: yes
 jokes colomun: yes
 get emails: yes 
 cycle count: yes
