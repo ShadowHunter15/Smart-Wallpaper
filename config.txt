@@ -10,6 +10,6 @@ internet speed: yes
 news headlines: yes 
 Crypto prices: yes
 fun fact colomun: yes 
-jokes colomun:no
+jokes colomun: yes
 get emails: yes 
 cycle count: yes
