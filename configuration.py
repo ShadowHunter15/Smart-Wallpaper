@@ -10,7 +10,9 @@ class SmartWallpaperConfiguration():
     
     def __init__(self) -> None:
         self.configuration = {}
-        self.ScreenSize = (ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1))
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware()
+        self.ScreenSize = (user32.GetSystemMetrics(0), user32.GetSystemMetrics(1))
         self.config = self.load_config()
         self.parse_config(self.config)
 
@@ -25,7 +27,7 @@ class SmartWallpaperConfiguration():
         choice = None
         Wp = ""
         #user didn't choose a wallpaper, default will be used
-        if config[0][:4] == "None":
+        if config[0].lower() == "none":
             Wp = os.path.abspath("srcs/WP.jpg")
             choice = "default"
             
@@ -43,20 +45,13 @@ class SmartWallpaperConfiguration():
         self.load_wallpaper(Wp, choice)
         #endregion
         
-        #region: run at startup
-        if config[1].lower() in ("yes", "no"):
-            self.configuration["startup"] = config[1]
-        else:
-            raise ValueError("invalid choice for setting: run at startup")
-        #endregion
-        
         #region: text font
-        self.load_font(config[3])
+        self.load_font(config[2])
         #endregion               
 
         #region: clock format
-        if config[2] in ("24", "12"):
-            self.configuration["clock format"] = config[2]
+        if config[1] in ("24", "12"):
+            self.configuration["clock format"] = config[1]
         else:
             raise ValueError("invalid choice for setting: clock format")
         #endregion
@@ -85,9 +80,9 @@ class SmartWallpaperConfiguration():
         self.configuration["font"] = font     
 
     def load_others(self, config) -> None:
-        configs = ["battery", "alarms", "reminders", "weather", "app usage", "internet speed", "news", "crypto", "facts", "jokes", "email"]
+        configs = ["battery", "alarms", "reminders", "weather", "app usage", "internet speed", "news", "crypto", "facts", "jokes", "email", "cycle"]
         curr = 0
-        for i in config[4:]:
+        for i in config[3:]:
             if i.lower() in ("yes", "no"):
                 self.configuration[configs[curr]] = i
             else:
