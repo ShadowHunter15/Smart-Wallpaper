@@ -1,4 +1,7 @@
-VERSION 1.15
+VERSION 1.50
+
+## Developed by:
+# Omar Sameh 
 
 LOG
 #
@@ -7,6 +10,8 @@ LOG
 28/7/2022 Version 1.10: implemented battery indicator and added requirements file. 
 #
 30/7/2022 Version 1.15: added seconds to clock, added support for all 16:9 displays.
+#
+13/8/2022 Version 1.50: removed seconds from clock due to performance issues, added ping, and battery charging indicator and remaining battery bar .
 #
 # Welcome to Smart Wallpaper! 
 
@@ -33,6 +38,7 @@ for the font provide a path or leave the choice "None" to use the default font.
   * jokes
   * facts
   * battery
+  * ping
 
 ## currently supported platforms:
  
