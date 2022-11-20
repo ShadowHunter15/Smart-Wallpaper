@@ -1,4 +1,4 @@
-# VERSION 1.50
+# VERSION 1.60
 
 ## Developed by:
  * Omar Sameh 
