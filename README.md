@@ -13,6 +13,9 @@ LOG
 #
 13/8/2022 Version 1.50: removed seconds from clock due to performance issues, added ping, and battery charging indicator and remaining battery bar .
 #
+
+20/11/2022 Version 1.50: Minor tweaks .
+#
 # Welcome to Smart Wallpaper! 
 
 
