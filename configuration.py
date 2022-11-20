@@ -9,6 +9,7 @@ class SmartWallpaperConfiguration():
     """
     
     def __init__(self) -> None:
+        print("CONFIGURATION: GO")
         self.configuration = {}
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()

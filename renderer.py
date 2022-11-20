@@ -16,6 +16,7 @@ class SmartWallpaperRenderer():
     """
     
     def __init__(self, settings, screenSize) -> None:
+        print("RENDERER: GO")
         self.cycle = 0
         self.ratio =  screenSize[0] / 1366
         self.currDate = dt.today().strftime('%Y-%m-%d')
@@ -32,11 +33,13 @@ class SmartWallpaperRenderer():
         self.currImage = None
 
     def mainLoop(self):
-        self.renderTimeDate()
-        self.renderFunFacts()
-        self.renderJokes()
-        self.renderBattery()
-        self.renderCycleCount()
+        self.turn = self.cycle % 200 == 0
+        if(self.turn):
+            self.renderTimeDate()
+            self.renderFunFacts()
+            self.renderJokes()
+            self.renderBattery()
+            self.renderCycleCount()
         self.cycle += 1
     #Getting path to base wallpaper image
     def initializeBaseWallpaper(self):
@@ -47,6 +50,7 @@ class SmartWallpaperRenderer():
         self.baseWallpaper = os.path.abspath("srcs") + "\BaseWallpaper.png"
     #printing the time and date on the image
     def renderTimeDate(self):
+        
         #time/date will be positioned in the center, with plans to add more customizable options later.
         #coordinates in the PIL module start from the top left corner as the (0, 0) origin
         image = Image.open(self.baseWallpaper)
@@ -175,13 +179,14 @@ class SmartWallpaperRenderer():
             saveFile = open("srcs/saveData.txt", "w")
             imageText = ImageDraw.Draw(self.currImage)
             cycleCountFont = self.getFont(self.font, int(25 * self.ratio))
-            w, h = cycleCountFont.getsize("Cycle: " + str(self.cycle))
-            imageText.text((int(self.screenSize[0] - (w + (10 * self.ratio))), int(self.screenSize[1] - (h + (10 * self.ratio)))), "Cycle: " + str(self.cycle), font=cycleCountFont)
+            w, h = cycleCountFont.getsize("Cycle: " + str(self.cycle//200))
+            imageText.text((int(self.screenSize[0] - (w + (10 * self.ratio))), int(self.screenSize[1] - (h + (10 * self.ratio)))), "Cycle: " + str(self.cycle//200), font=cycleCountFont)
             saveFile.write(str(self.cycle))
             saveFile.close()
     
     def renderFinalWallpaper(self):
-        path = os.path.abspath("srcs") + "/finalImage.png"
-        self.currImage.save(path)
-        ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
+        if(self.turn):
+            path = os.path.abspath("srcs") + "/finalImage.png"
+            self.currImage.save(path)
+            ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
 
