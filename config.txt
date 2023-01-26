@@ -1,6 +1,9 @@
-Wallpaper path: srcs/3.jpg
+Wallpaper path (single image or directory): srcs/images/5.jpg
+time between images (if directory chosen above) in seconds: 100
 clock format (24 or 12): 12
 font file path: srcs/Comfortaa-Light.ttf
+ringtone path (wav file):srcs/ringtone.wav
+key to stop alarm (defaults to space): +
 battery percentage: yes
 alarms: yes 
 reminders: yes 
@@ -10,6 +13,5 @@ ping: yes
 news headlines: yes 
 Crypto prices: yes
 fun fact colomun: yes
-jokes colomun: yes
-get emails: yes 
-cycle count: yes
+jokes colomun: no
+get emails: yes

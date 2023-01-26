@@ -1,11 +1,9 @@
 import ctypes
 import datetime
 import random
-from turtle import screensize
 from PIL import ImageDraw, ImageFont, Image
 import os
 from functools import lru_cache
-from datetime import datetime as dt
 import psutil
 class SmartWallpaperRenderer():
     
@@ -17,11 +15,10 @@ class SmartWallpaperRenderer():
     
     def __init__(self, settings, screenSize) -> None:
         print("RENDERER: GO")
-        self.cycle = 0
         self.ratio =  screenSize[0] / 1366
-        self.currDate = dt.today().strftime('%Y-%m-%d')
         self.getFont = lru_cache()(ImageFont.truetype)
         print(self.ratio)
+        self.cycle = 0
         self.settings = settings
         self.font = settings["font"]
         self.fact = None
@@ -31,46 +28,45 @@ class SmartWallpaperRenderer():
         self.initializeBaseWallpaper()
         self.initilalizeVariables()
         self.currImage = None
-
-    def mainLoop(self):
-        self.turn = self.cycle % 200 == 0
-        if(self.turn):
-            self.renderTimeDate()
-            self.renderFunFacts()
-            self.renderJokes()
-            self.renderBattery()
-            self.renderCycleCount()
-        self.cycle += 1
+        self.ping = "Infinte"
+        self.rate = "--"
+    
+    #things that have to be updated every loop.
+    def mainLoop(self, cycle):
+        self.cycle = cycle
+        self.renderFunFacts()
+        self.renderJokes()
+        self.renderBattery()
+        self.renderInternetPing(self.ping)
+        self.renderChargingRate(self.rate)
     #Getting path to base wallpaper image
+    
     def initializeBaseWallpaper(self):
-        self.baseWallpaper = self.settings["wallpaper"]
+        if(self.settings["wallpaper"][1] == "img"):
+            self.baseWallpaper = self.settings["wallpaper"][0]
+        else:
+            self.baseWallpaper = Image.open(random.choice(self.settings["wallpaper"][0]))
         self.baseWallpaper = self.baseWallpaper.resize(self.screenSize)
-        print(self.screenSize)
+        
         self.baseWallpaper.save(os.path.abspath("srcs") + "\BaseWallpaper.png")
         self.baseWallpaper = os.path.abspath("srcs") + "\BaseWallpaper.png"
+
     #printing the time and date on the image
-    def renderTimeDate(self):
-        
+    def renderTimeDate(self, Time, currDate):
         #time/date will be positioned in the center, with plans to add more customizable options later.
         #coordinates in the PIL module start from the top left corner as the (0, 0) origin
         image = Image.open(self.baseWallpaper)
         imageText = ImageDraw.Draw(image)
-        if(self.settings["clock format"] == "12"):
-            Time = datetime.datetime.now().time().strftime("%I:%M")
-            fontAMorPM = self.getFont(self.font, int(65 * self.ratio))
-            PMorAM = datetime.datetime.now().time().strftime("%p")
-            w, h = fontAMorPM.getsize(PMorAM) 
-            imageText.text(((int((self.screenSize[0] - w)/2),int((self.screenSize[1]/2) + int(40 * self.ratio)))), PMorAM, font=fontAMorPM)
-        elif(self.settings["clock format"] == "24"):
-            Time = datetime.datetime.now().time().strftime("%H:%M")
-        if(self.currDate != dt.today().strftime('%d-%m-%Y')):
-            self.currDate = dt.today().strftime('%d-%m-%Y')
+        PMorAM = datetime.datetime.now().time().strftime("%p")
         fontTime = self.getFont(self.font, int(150 * self.ratio))
         fontDate = self.getFont(self.font, int(50 * self.ratio));
-        w, h = fontTime.getsize(Time) 
-        wdate, hdate = fontDate.getsize(self.currDate)
-        imageText.text((int((self.screenSize[0] - wdate)/2),int((self.screenSize[1]) - (300 * self.ratio ))/2), self.currDate, font = fontDate)
-        imageText.text((int((self.screenSize[0] - w)/2),int((self.screenSize[1] - (175 * self.ratio))/2)), Time, font=fontTime)
+        wt, ht = fontTime.getsize(Time) 
+        fontAMorPM = self.getFont(self.font, int(65 * self.ratio))
+        wdate, hdate = fontDate.getsize(currDate)
+        w, h = fontAMorPM.getsize(PMorAM) 
+        imageText.text(((int((self.screenSize[0] - w)/2),int((self.screenSize[1]/2) + int(40 * self.ratio)))), PMorAM, font=fontAMorPM)
+        imageText.text((int((self.screenSize[0] - wdate)/2),int((self.screenSize[1]) - (300 * self.ratio ))/2), currDate, font = fontDate)
+        imageText.text((int((self.screenSize[0] - wt)/2),int((self.screenSize[1] - (175 * self.ratio))/2)), Time, font=fontTime)
         self.currImage = image
     #for optimization 
     def initilalizeVariables(self):
@@ -79,21 +75,19 @@ class SmartWallpaperRenderer():
     def renderFunFacts(self):
         if(self.settings["facts"] != "yes"):
             return
-        fontFact = self.getFont(self.font, int(32 * self.ratio))
-        if(self.cycle % 15 == 0):
+        fontFact = self.getFont(self.font, int(31 * self.ratio))
+        if(self.cycle % 3500 == 0):
             factsFile = open("srcs/facts.txt", "r")
             facts = factsFile.readlines()
             fact = facts[random.randint(0, len(facts))].split()
             factsFile.close()
-            while len(fact) > 20:
-                fact = facts[random.randint(0, len(facts))].split()
             currString = fact[0]
             currStringLen = 0
-            hi = int(450 * self.ratio)
+            hi = int(650 * self.ratio)
             for i in range(1, len(fact)):
                 currStringLen += fontFact.getsize(fact[i])[0]
                 if(currStringLen >= hi):
-                    hi += int(450 * self.ratio)
+                    hi += int(650 * self.ratio)
                     currString += "\n" + fact[i]
                 else:
                     currString += " " + fact[i]
@@ -102,12 +96,12 @@ class SmartWallpaperRenderer():
         imageText = ImageDraw.Draw(self.currImage)
         imageText.text((int((self.screenSize[0] - fontFact.getsize("Did you know that:")[0])/2),int((self.screenSize[1] + (250 * self.ratio))/2)), "Did you know that:", font=fontFact)
         imageText.text((int((self.screenSize[0] - w)/2),int((self.screenSize[1] + (350 * self.ratio))/2)), self.fact, font=fontFact)
-    #printing the jokess in the image
+    #printing the jokes in the image
     def renderJokes(self):
         if(self.settings["jokes"] != "yes"):
             return
         fontJoke = self.getFont(self.font, int(27 * self.ratio))
-        if(self.cycle % 20 == 0):
+        if(self.cycle % 5000 == 0):
             jokesFile = open(os.path.abspath("srcs/jokes.txt"), "r")
             jokes = jokesFile.readlines()
             joke = jokes[random.randint(0, len(jokes))].split()
@@ -146,7 +140,6 @@ class SmartWallpaperRenderer():
                 bolt = bolt.resize((int(bolt.size[0] * 0.15 * self.ratio), int(bolt.size[1] * 0.15 * self.ratio)))
                 bolt = bolt.convert("RGBA")
                 self.currImage.paste(bolt, (int(self.screenSize[0] - int(battery.size[0] + int(12 * self.ratio))), int(14 * self.ratio)), bolt) #THAT'S HOW YOU PASTE TRASNAPARENT IMAGES IN PIL
-
     def renderInternetPing(self, ping):
         if(self.settings["internet speed"] == "yes"):
             ping = str(ping).split()
@@ -170,23 +163,16 @@ class SmartWallpaperRenderer():
             imageText.text((int(wifi.size[0]/2) + int(self.screenSize[0] - (160 * self.ratio)) - int(pingFont.getsize(ping)[0]/2), int(90 * self.ratio)), ping,font=pingFont, fill=colour)
             self.currImage.paste(wifi, (int(self.screenSize[0] - (160 * self.ratio)), int(30 * self.ratio)), wifi)
     
-    def renderCycleCount(self):
-        if(self.settings["cycle"] == "yes"):
-            if(self.cycle == 0):
-                saveFile = open("srcs/saveData.txt", "r")
-                self.cycle = int(saveFile.read())
-                saveFile.close()
-            saveFile = open("srcs/saveData.txt", "w")
-            imageText = ImageDraw.Draw(self.currImage)
-            cycleCountFont = self.getFont(self.font, int(25 * self.ratio))
-            w, h = cycleCountFont.getsize("Cycle: " + str(self.cycle//200))
-            imageText.text((int(self.screenSize[0] - (w + (10 * self.ratio))), int(self.screenSize[1] - (h + (10 * self.ratio)))), "Cycle: " + str(self.cycle//200), font=cycleCountFont)
-            saveFile.write(str(self.cycle))
-            saveFile.close()
-    
+    def renderChargingRate(self, rate):
+        fontBatteryRate = self.getFont(self.font, int(22 * self.ratio))
+        if(rate[0] != "-"):
+            rate = "+" + rate
+        rate = rate + "% /min"
+        imageText = ImageDraw.Draw(self.currImage)
+        imageText.text((int(self.screenSize[0] - (60 * self.ratio)) - int(fontBatteryRate.getsize(rate)[0]/2), int(135 * self.ratio)), rate,font=fontBatteryRate, fill="white")
+        
     def renderFinalWallpaper(self):
-        if(self.turn):
-            path = os.path.abspath("srcs") + "/finalImage.png"
-            self.currImage.save(path)
-            ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
+        path = os.path.abspath("srcs") + "/finalImage.png"
+        self.currImage.save(path)
+        ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
 

@@ -3,3 +3,6 @@ PIL
 datetime
 psutil
 subprocess
+keyboard
+winsound
+subprocess

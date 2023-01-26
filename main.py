@@ -6,24 +6,52 @@ from onlineservices import SmartWallpaperOnlineServies
 import time
 import pyautogui
 import keyboard
-settings, screenSize = SmartWallpaperConfiguration().configuration, SmartWallpaperConfiguration().ScreenSize
-Sw = SmartWallpaperRenderer(settings, screenSize)
+import winsound
+Configuration = SmartWallpaperConfiguration()
+settings, screenSize = Configuration.configuration, Configuration.ScreenSize
+renderer = SmartWallpaperRenderer(settings, screenSize)
 online = SmartWallpaperOnlineServies()
-#offline = SmartWallpaperOfflineServices()
+offline = SmartWallpaperOfflineServices()
 errors = 0
-
+cycle = 0
+offline.format = settings["clock format"]
+offline.ringtone = settings["ringtone"]
+offline.getAlarms()
+wallpaperTimer = settings["wallpaper time"] * 50
+keyboard.on_press_key(settings["stop alarm"], lambda x: winsound.PlaySound(None, 0))
 while True:
     try:
-        Sw.mainLoop()
-        Sw.renderInternetPing(online.getInternetPing(Sw.cycle))
-        Sw.renderFinalWallpaper()
-        if(Sw.cycle % 200 == 0):
-            print("Cycle: " + str(Sw.cycle // 200) + " || errors so far: "  + str(errors), end = '\r')
+        if(cycle % wallpaperTimer == 0 and settings["wallpaper"][1] == "dir"):
+            renderer.initializeBaseWallpaper()
+        if(cycle % 125 == 0):
+            Time, date = offline.getTime()
+            renderer.renderTimeDate(Time, date)
+            renderer.mainLoop(cycle)
+            offline.checkAlarms()
+            print("Cycle: " + str(cycle // 125) + " || errors so far: "  + str(errors), end = '\r')
+        
+        if (cycle % 500 == 0):
+            renderer.ping = online.getInternetPing()
+        
+        if(cycle % 1500 == 0):
+            renderer.rate = offline.getChargingRate()
+            
+            
+        if(cycle % 6000 == 0):
+            offline.getAlarms()
+            
+        if(cycle % 125 == 0):
+            renderer.renderFinalWallpaper()
+        
+            
         time.sleep(0.02)
+        
+        cycle += 1
 
-    except OSError as error: 
+    except Exception as error: 
         errors += 1
         print("error: " + str(error))
+        time.sleep(0.1)
         ctypes.windll.user32.SystemParametersInfoW(20, 0, r"C:\Users\osdrw\Desktop\Programming\Python\Smart wallpaper\srcs\finalImage.png", 0)
 
     

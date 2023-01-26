@@ -1,4 +1,4 @@
-# VERSION 1.60
+# VERSION 2.0
 
 ## Developed by:
  * Omar Sameh 
@@ -16,6 +16,7 @@ LOG
 
 20/11/2022 Version 1.60: Minor tweaks .
 #
+26/01/2023 Version 2.0: Major updates. Added support for slideshow wallpapers, allowing users to choose a directory instead of an image. Got the alarm system working, in 24 and 12 hour formats and can now play ringtones. Also added a battery charge/discharge rate under the battery icon.
 # Welcome to Smart Wallpaper! 
 
 
@@ -29,7 +30,7 @@ it is also customizable, you can change many things like the font, background im
 the config file is the settings panel for now.
 the toolkit comes with a default font and wallapper, but you may want to provide a path to those. You can also toggle some functionalities on or off by simply changing them between "yes" and "no".
 
-for the wallpaper, provide a path to the background image, or simply enter a color (only main colors supported for now). or leave the choice "None" to use the default image.
+for the wallpaper, provide a path to the background image or direectory if you want  a slideshow, or simply enter a color (only main colors supported for now). or leave the choice "None" to use the default image.
 
 for the font provide a path or leave the choice "None" to use the default font.
 
@@ -42,7 +43,8 @@ for the font provide a path or leave the choice "None" to use the default font.
   * facts
   * battery
   * ping
-
+  * alarm
+  * charge / discharge rate
 ## currently supported platforms:
  
   * Windows
